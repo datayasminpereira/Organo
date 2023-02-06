@@ -1,12 +1,15 @@
 import { useState } from 'react';
-import Banner from './components/Banner/Banner';
+import Banner from './components/Banner';
 import Formulario from './components/Formulario';
 import Time from './components/Time';
 import { v4 as uuidv4 } from 'uuid';
+import { IColaborador } from './shared/interfaces/IColaborador';
+import { ITime } from './shared/interfaces/ITime';
+
 
 function App() {
 
-  const [times, setTimes] = useState([
+  const [times, setTimes] = useState<ITime[]>([
     {
       id: uuidv4(),
       nome: "Programação",
@@ -151,6 +154,7 @@ function App() {
       time: times[3].nome
     },
     {
+      id: uuidv4(),
       nome: 'DANIEL ARTINE',
       cargo: 'Engenheiro de Software na Stone Age',
       imagem: 'https://www.alura.com.br/assets/img/lideres/daniel-artine.1647533644.jpeg',
@@ -238,17 +242,17 @@ function App() {
     },
   ]
 
-  const [colaboradores, setColaboradores] = useState(inicial)
+  const [colaboradores, setColaboradores] = useState<IColaborador[]>(inicial)
 
-  const aoNovoColaboradorCadastrado = (colaborador) => {
+  const aoNovoColaboradorCadastrado = (colaborador: IColaborador) => {
     setColaboradores([...colaboradores, colaborador])
   }
 
-  function deletarColaborador(id) {
+  function deletarColaborador(id: string) {
     setColaboradores(colaboradores.filter(colaborador => colaborador.id !== id));
   }
 
-  function mudarCorDoTime(cor, id) {
+  function mudarCorDoTime(cor: string, id: string) {
     setTimes(times.map(time => {
       if(time.id === id) {
         time.cor = cor
@@ -256,12 +260,20 @@ function App() {
       return time
     }))
   }
-
-  function cadastrarTime({ nome, cor }) {
-    setTimes([...times, { nome, cor, id: uuidv4() }])
+  
+  type Teste = {
+    nome: string,
+    cor: string
   }
 
-  function resolverFavorito(id) {
+  function cadastrarTime(nome: Teste["nome"], cor:Teste["cor"] ) {
+    let novoTimeACadastrar = {nome, cor ,id: uuidv4()}
+    let novaListaDeTimes = [...times, novoTimeACadastrar]
+    setTimes(novaListaDeTimes)
+  
+  }
+
+  function resolverFavorito(id: string) {
     setColaboradores(colaboradores.map(colaborador => {
       if (colaborador.id === id) colaborador.favorito = !colaborador.favorito
       return colaborador
@@ -270,7 +282,7 @@ function App() {
 
   return (
     <div className="App">
-      <Banner />
+      <Banner enderecoImagem="/images/banner.png" textoAlternativo="Imagem do Banner da Organo"/>
       <Formulario 
         aoCriarTime={cadastrarTime} 
         times={times.map(time => time.nome)} 

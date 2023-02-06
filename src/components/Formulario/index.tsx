@@ -3,30 +3,44 @@ import Campo from "../Campo"
 import ListaSuspensa from "../ListaSuspensa"
 import Botao from "../Botao"
 import { useState } from "react"
+import { IColaborador } from "../../shared/interfaces/IColaborador"
+import { v4 as uuidv4 } from 'uuid';
 
-const Formulario = (props) => {
+interface FormularioProps {
+    aoColaboradorCadastrado: (colaborador: IColaborador) => void
+    times: string[],
+    aoCriarTime: (nome: string, cor: string) => void
+}
 
+const Formulario = (props: FormularioProps) => {
+
+    type Teste = {
+        nome: string,
+        cor: string
+      }
+    const id = uuidv4()
     const [nome, setNome] = useState('')
     const [cargo, setCargo] = useState('')
     const [imagem, setImagem] = useState('')
     const [time, setTime] = useState("")
-    const [nomeTime, setNomeTime] = useState('')
-    const [corTime, setCorTime] = useState('')
+    const [nomeTime, setNomeTime] = useState<Teste["nome"]>('')
+    const [corTime, setCorTime] = useState<Teste["cor"]>('')
 
-    const aoSalvar = (e) => {
+    const aoSalvar = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         props.aoColaboradorCadastrado({
-            nome: nome,
-            cargo: cargo,
-            imagem:imagem, 
-            time:time
+            id,
+            nome,
+            cargo,
+            imagem, 
+            time
         })
         setNome("")
         setCargo("")
         setImagem("")
         setTime("")
     }
-
+    
     return (
         <section className="formulario-container">
             <form className="formulario" onSubmit={aoSalvar}>
@@ -63,7 +77,7 @@ const Formulario = (props) => {
             </form>
             <form className="formulario" onSubmit={(evento) => {
                 evento.preventDefault()
-                props.aoCriarTime({ nome: nomeTime, cor: corTime })
+                props.aoCriarTime( nomeTime,  corTime )
             }}>
                 <h2>Preencha os dados para criar um novo time.</h2>
                 <Campo
